@@ -1,0 +1,23 @@
+# Downloaded datasets and CMS policy files
+data/
+
+# API keys and environment configuration
+.env
+.env.*
+!.env.example
+
+# Python virtual environments
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Testing and linting cache
+.pytest_cache/
+.ruff_cache/
+
+# Operating system files
+.DS_Store
+Thumbs.db

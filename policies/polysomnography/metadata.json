@@ -1,0 +1,31 @@
+
+{
+  "procedure": "polysomnography",
+  "documents": [
+    {
+      "doc_id": "L36593",
+      "doc_type": "LCD",
+      "title": "Polysomnography",
+      "version": 37,
+      "contractor": "Palmetto GBA",
+      "source_url": "https://www.cms.gov/medicare-coverage-database/view/lcd.aspx?lcdid=36593&ver=37",
+      "original_effective_date": "2016-06-13",
+      "revision_effective_date": "2025-03-20",
+      "retrieved_at": null,
+      "sha256": null,
+      "related_docs": ["A56995"]
+    },
+    {
+      "doc_id": "A56995",
+      "doc_type": "billing_article",
+      "title": "Billing and Coding: Polysomnography",
+      "version": 15,
+      "contractor": "Palmetto GBA",
+      "source_url": "https://www.cms.gov/medicare-coverage-database/view/article.aspx?articleid=56995&ver=15",
+      "revision_effective_date": "2024-03-07",
+      "retrieved_at": null,
+      "sha256": null,
+      "related_docs": ["L36593"]
+    }
+  ]
+}
