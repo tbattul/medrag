@@ -49,3 +49,41 @@ def test_invalid_version_is_rejected():
         pass
     else:
         raise AssertionError("A negative version should be rejected")
+
+
+def test_coverage_rule_references():
+    """Every criterion referenced by a rule must exist."""
+    import json
+    from pathlib import Path
+
+    from common.schemas import Criterion, CoverageRule
+
+    project_root = Path(__file__).resolve().parents[1]
+    criteria_path = (
+        project_root / "policies" / "polysomnography" / "criteria.json"
+    )
+
+    data = json.loads(criteria_path.read_text(encoding="utf-8"))
+
+    criteria = [Criterion.model_validate(c) for c in data["criteria"]]
+    rules = [CoverageRule.model_validate(r) for r in data["rules"]]
+
+    criterion_ids = [criterion.id for criterion in criteria]
+    assert len(criterion_ids) == len(set(criterion_ids)), (
+        "Duplicate criterion IDs found"
+    )
+
+    for rule in rules:
+        referenced_ids = (
+            rule.all_of
+            + rule.any_of
+            + rule.exclusions
+            + rule.exceptions
+        )
+
+        for criterion_id in referenced_ids:
+            assert criterion_id in criterion_ids, (
+                f"Rule {rule.rule_id} references missing criterion "
+                f"{criterion_id}"
+            )
+

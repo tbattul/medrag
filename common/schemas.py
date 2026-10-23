@@ -26,3 +26,34 @@ class PolicyMetadata(BaseModel):
 
     procedure: str
     documents: list[PolicyDocument] = Field(min_length=1)
+
+
+class Criterion(BaseModel):
+    """One individual CMS coverage requirement."""
+
+    id: str
+    text: str
+    source_section: str
+    evidence_type: Literal[
+        "diagnosis",
+        "symptom",
+        "prior_test",
+        "documentation",
+        "setting",
+        "procedure",
+        "other",
+    ]
+
+
+class CoverageRule(BaseModel):
+    """A group of related coverage criteria."""
+
+    rule_id: str
+    name: str
+    applies_to: Literal["PSG", "HST", "both"]
+    all_of: list[str] = Field(default_factory=list)
+    any_of: list[str] = Field(default_factory=list)
+    exclusions: list[str] = Field(default_factory=list)
+    exceptions: list[str] = Field(default_factory=list)
+    source_section: str
+
