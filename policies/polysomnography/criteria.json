@@ -1,0 +1,35 @@
+{
+  "policy_id": "L36593",
+  
+"criteria": [
+  {
+    "id": "L36593-C01",
+    "text": "For a study to be reported as a polysomnogram, sleep must be recorded and staged.",
+    "source_section": "Criteria for coverage of Diagnostic Tests",
+    "evidence_type": "procedure"
+  },
+  {
+    "id": "L36593-C02",
+    "text": "The documentation should be retained in the patient's medical record.",
+    "source_section": "Criteria for coverage of Diagnostic Tests",
+    "evidence_type": "documentation"
+  }
+],
+  
+"rules": [
+  {
+    "rule_id": "L36593-R01",
+    "name": "Polysomnography documentation requirements",
+    "applies_to": "PSG",
+    "all_of": [
+      "L36593-C01",
+      "L36593-C02"
+    ],
+    "any_of": [],
+    "exclusions": [],
+    "exceptions": [],
+    "source_section": "Criteria for coverage of Diagnostic Tests"
+  }
+]
+
+}
