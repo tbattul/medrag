@@ -1,23 +1,18 @@
-# Downloaded datasets and CMS policy files
-data/
-
-# API keys and environment configuration
+# Secrets
 .env
-.env.*
-!.env.example
 
-# Python virtual environments
-.venv/
-venv/
+# Generated / downloaded data — never commit (synthetic or not)
+data/
+.cache/
 
-# Python cache
+# Python
 __pycache__/
 *.pyc
-
-# Testing and linting cache
+.venv/
 .pytest_cache/
 .ruff_cache/
 
-# Operating system files
+# OS / editor
 .DS_Store
-Thumbs.db
+.vscode/
+.idea/

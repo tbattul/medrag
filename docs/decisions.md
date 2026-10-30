@@ -1,42 +1,32 @@
+# Decision log
 
-# MedRAG — Project Decision Log
+One entry per non-obvious choice: what we chose, what else we considered, and why.
 
-### Decision
+## 2026-10-22 — Synthea generation settings
 
-We selected Polysomnography (sleep study) as the first medical procedure supported by MedRAG.
+**Decision:** Generate patients with Synthea **v4.0.0** (pinned by SHA-256), seed **42** for both
+population and clinicians, reference date **2026-01-01**, **1,000** living patients in
+**Massachusetts**, FHIR R4 JSON only. Script: `scripts/generate_synthea.py`.
 
-For the initial prototype, we will focus on evaluating documentation for suspected obstructive sleep apnea (OSA), using applicable Medicare coverage requirements.
+**Why:**
+- *Pinned release, not `master-branch-latest`:* the rolling build changes whenever Synthea
+  merges code, which would silently change our patients and break eval comparisons.
+- *Pinned reference date:* without `-r`, Synthea simulates up to "today", so ages and dates
+  would differ between runs on different days. Verified: two runs with these settings produce
+  byte-identical patient bundles.
+- *Same seed for `-s` and `-cs`:* `-s` alone fixes the patients but not which clinicians they
+  see, and practitioner references end up in our documents.
+- *Massachusetts:* Synthea's default and best-tested demographics; geography doesn't matter
+  for CMS national coverage policies.
+- *FHIR only (no CSV/C-CDA):* one format to parse; FHIR is what real EHR integrations use,
+  which is the relevant skill for an FDE role.
 
-### Policy Sources
+**Consequences:** `-p 1000` counts *living* patients; Synthea also exports the people who died
+during the simulation, so the output has 1,152 patient bundles (1,000 alive, 152 deceased)
+plus 2 shared bundles (hospitals, practitioners). About 4 GB on disk, ~2.5 min to generate.
+Synthea's built-in encounter notes (`DocumentReference`) are templated and thin, so criteria
+evidence will come from our hand-written synthetic notes.
 
-- Local Coverage Determination: Polysomnography
-- LCD ID: L36593
-- LCD Version: 37
-- Associated Billing and Coding Article: A56995
-- Article Version: 15
-- Medicare Contractor: Palmetto GBA
-
-### Rationale
-
-- Polysomnography has published Medicare coverage documentation.
-- The policy provides clinical requirements that can be converted into structured criteria.
-- We can create synthetic patient records to test whether MedRAG retrieves supporting evidence.
-- This is a manageable initial use case for our RAG prototype.
-
-### Implementation Decisions
-
-- Downloaded CMS documents will be stored in `data/raw/cms/`.
-- Policy metadata will be stored in `policies/polysomnography/metadata.json`.
-- Structured coverage criteria will be stored in `policies/polysomnography/criteria.json`.
-- Downloaded datasets and policy files will not be committed to Git.
-- Policy metadata, criteria, scripts, and tests will be committed to Git.
-
-### Next Actions
-
-1. Verify policy metadata and effective dates.
-2. Create the policy metadata JSON file.
-3. Define validation schemas.
-4. Extract and review the clinical criteria.
-5. Implement a reproducible CMS policy download script.
-6. Create synthetic clinical notes and evidence labels.
-  
+**Alternatives considered:** CSV export (easier to load into Postgres, but loses FHIR
+structure); a smaller population (faster, but too few patients with the relevant conditions:
+e.g. only 182 of 1,152 have chronic low back pain).
